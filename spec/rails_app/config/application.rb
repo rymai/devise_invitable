@@ -5,7 +5,7 @@ require "action_mailer/railtie"
 require "active_resource/railtie"
 require "rails/test_unit/railtie"
 
-Bundler.require(:default, :test, DEVISE_ORM) if defined?(Bundler)
+Bundler.require(:default, :development, DEVISE_ORM) if defined?(Bundler)
 
 begin
   require "#{DEVISE_ORM}/railtie"
@@ -17,11 +17,8 @@ require "devise_invitable"
 
 module RailsApp
   class Application < Rails::Application
-    # Add additional load paths for your own custom dirs
-    config.autoload_paths.reject!{ |p| p =~ /\/app\/(\w+)$/ && !%w(controllers helpers views).include?($1) }
-    config.autoload_paths += [ "#{config.root}/app/#{DEVISE_ORM}" ]
+    config.autoload_paths += %W[#{config.root}/app/#{DEVISE_ORM}]
     
-    # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters << :password
     
     config.action_mailer.default_url_options = { :host => "localhost:3000" }
