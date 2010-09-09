@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.email        = ["rymai@rymai.com"]
   s.homepage     = "http://github.com/rymai/devise_invitable"
   s.summary      = "An invitation strategy for devise"
-  s.description  = "It adds a module to Devise that allow authenticated resources to send invitations by email to others. Invited resources accept an invitation by setting their password."
+  s.description  = "A module for Devise allowing authenticated resources to send invitations to create account by email to other resources. Invited resources accept an invitation by *at minimum* setting their password."
   s.files        = Dir["{app,config,lib}/**/*"] + %w[LICENSE README.rdoc]
   s.require_path = "lib"
   s.rdoc_options = ["--main", "README.rdoc", "--charset=UTF-8"]

@@ -1,3 +1,11 @@
+== September 9, 2010
+
+* Feature:
+  * Redirect to after_sign_out_path_for(resource_name) when user is visiting /:resource_name/invitation/accept without invitation_token or with an invalid invitation_token.
+
+* Change:
+  * After inviting a new resource, the inviter is redirected to after_update_path_for(resource_name) (he was redirected to after_sign_in_path_for(resource_name) before).
+
 == 0.6.7 - September 7, 2010
 
 * Bugfix:
