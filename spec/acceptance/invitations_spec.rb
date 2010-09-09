@@ -61,14 +61,20 @@ feature "Invitations:" do
     current_url.should == "http://www.example.com/"
   end
   
-  scenario "not authenticated user with invalid invitation token should not be able to accept invitation" do
+  scenario "not authenticated user with invalid invitation token should be redirected to after_sign_out_path_for(resource_name)" do
     user = create_user
-    accept_invitation :invitation_token => 'invalid_token'
+    visit "http://www.example.com/users/invitation/accept?invitation_token=invalid_token"
     
-    current_url.should == "http://www.example.com/users/invitation"
-    page.should have_css('#error_explanation')
-    page.should have_content('Invitation token is invalid')
-    user.should_not be_valid_password('987654321')
+    current_url.should == "http://www.example.com/"
+    page.should have_content('The invitation token provided is not valid!')
+  end
+  
+  scenario "not authenticated user with no invitation token should be redirected to after_sign_out_path_for(resource_name)" do
+    user = create_user
+    visit "http://www.example.com/users/invitation/accept"
+    
+    current_url.should == "http://www.example.com/"
+    page.should have_content('The invitation token provided is not valid!')
   end
   
   scenario "not authenticated user with valid invitation token but invalid password should not be able to accept invitation" do

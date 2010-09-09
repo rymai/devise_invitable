@@ -18,7 +18,7 @@ class Devise::InvitationsController < ApplicationController
     
     if resource.invited?
       set_flash_message(:notice, :send_instructions, :email => params[resource_name][:email])
-      redirect_to after_sign_in_path_for(resource_name)
+      redirect_to after_update_path_for(resource_name)
     else
       render_with_scope :new
     end
@@ -26,8 +26,12 @@ class Devise::InvitationsController < ApplicationController
   
   # GET /resources/invitation/accept?invitation_token=abcdef
   def edit
-    self.resource = resource_class.find_or_initialize_with_error_by(:invitation_token, params[:invitation_token])
-    render_with_scope :edit
+    if params[:invitation_token] && self.resource = resource_class.first(:conditions => { :invitation_token => params[:invitation_token] })
+      render_with_scope :edit
+    else
+      set_flash_message(:alert, :invitation_token_invalid)
+      redirect_to after_sign_out_path_for(resource_name)
+    end
   end
   
   # PUT /resources/invitation
