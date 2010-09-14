@@ -94,6 +94,7 @@ You can also use the generator to generate scoped views:
 
   rails generate devise_invitable:views users
 
+Please be sure you have <tt>config.scoped_views = true</tt> in <tt>config/initializer/devise.rb</tt>!
 Please refer to {Devise's README}[http://github.com/plataformatec/devise] for more information about views.
 
 == Usage

@@ -1,3 +1,9 @@
+== September 14, 2010
+
+* Changes:
+  * Removed deprecation notices.
+  * Added a notice in README to check scoped_views is true before running: rails generate devise_invitable:views users.
+
 == September 9, 2010
 
 * Feature:

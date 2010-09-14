@@ -70,10 +70,6 @@ module Devise
           save(:validate => self.class.validate_on_invite) && !!deliver_invitation
         end
       end
-      def resend_invitation!
-        ActiveSupport::Deprecation.warn ":resend_invitation! is deprecated, please use :invite instead."
-        invite
-      end
       
       # Public: Accept the record's current invitation. The invitation can be
       # accepted only if the record has set a password.
@@ -105,10 +101,6 @@ module Devise
         else
           false
         end
-      end
-      def accept_invitation!
-        ActiveSupport::Deprecation.warn ":accept_invitation! is deprecated, please use :accept_invitation instead."
-        accept_invitation
       end
       
     private
@@ -185,10 +177,6 @@ module Devise
           
           invitable
         end
-        def send_invitation(attributes = {})
-          ActiveSupport::Deprecation.warn ":send_invitation is deprecated, please use :invite instead."
-          accept_invitation(attributes)
-        end
         
         # Accept an invitation for a record that has the given invitation_token.
         #
@@ -217,10 +205,6 @@ module Devise
             invitable.accept_invitation
           end
           invitable
-        end
-        def accept_invitation!(attributes = {})
-          ActiveSupport::Deprecation.warn ":accept_invitation! is deprecated, please use :accept_invitation instead."
-          accept_invitation(attributes)
         end
         
         Devise::Models.config(self, :invite_for)
