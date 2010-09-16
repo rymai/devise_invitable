@@ -24,7 +24,7 @@ class Devise::InvitationsController < ApplicationController
     end
   end
   
-  # GET /resources/invitation/accept?invitation_token=abcdef
+  # GET /resources/invitation/accept/:invitation_token or (legacy url) /resources/invitation/accept?invitation_token=:invitation_token
   def edit
     if params[:invitation_token] && self.resource = resource_class.first(:conditions => { :invitation_token => params[:invitation_token] })
       render_with_scope :edit

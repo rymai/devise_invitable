@@ -1,3 +1,8 @@
+== September 17, 2010
+
+* Changes:
+  * Url generated has been changed to /resources/invitation/accept/:invitation_token (legacy url /resources/invitation/accept?invitation_token=:invitation_token still work, with the magic Rails 3 optional parameters in routes!)
+
 == September 14, 2010
 
 * Changes:

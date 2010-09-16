@@ -63,7 +63,7 @@ module HelperMethods
   
   def accept_invitation(options = {})
     unless options[:visit] == false
-      visit "http://www.example.com/users/invitation/accept?invitation_token=#{options[:invitation_token]}"
+      visit "http://www.example.com/users/invitation/accept#{options[:legacy_url] ? "?invitation_token=" : "/"}#{options[:invitation_token]}"
     end
     fill_in 'Password', :with => '987654321'
     fill_in 'Password confirmation', :with => '987654321'

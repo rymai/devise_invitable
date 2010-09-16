@@ -61,9 +61,17 @@ feature "Invitations:" do
     current_url.should == "http://www.example.com/"
   end
   
-  scenario "not authenticated user with invalid invitation token should be redirected to after_sign_out_path_for(resource_name)" do
+  scenario "not authenticated user with invalid invitation token should be redirected to after_sign_out_path_for(resource_name) with legacy url" do
     user = create_user
     visit "http://www.example.com/users/invitation/accept?invitation_token=invalid_token"
+    
+    current_url.should == "http://www.example.com/"
+    page.should have_content('The invitation token provided is not valid!')
+  end
+  
+  scenario "not authenticated user with invalid invitation token should be redirected to after_sign_out_path_for(resource_name) with new url" do
+    user = create_user
+    visit "http://www.example.com/users/invitation/accept/invalid_token"
     
     current_url.should == "http://www.example.com/"
     page.should have_content('The invitation token provided is not valid!')
@@ -77,7 +85,20 @@ feature "Invitations:" do
     page.should have_content('The invitation token provided is not valid!')
   end
   
-  scenario "not authenticated user with valid invitation token but invalid password should not be able to accept invitation" do
+  scenario "not authenticated user with valid invitation token but invalid password should not be able to accept invitation with legacy url" do
+    user = invite
+    sign_out
+    accept_invitation :invitation_token => user.invitation_token, :legacy_url => true do
+      fill_in 'Password confirmation', :with => 'other_password'
+    end
+    
+    current_url.should == "http://www.example.com/users/invitation"
+    page.should have_css('#error_explanation')
+    page.should have_content("Password doesn't match confirmation")
+    user.should_not be_valid_password('987654321')
+  end
+  
+  scenario "not authenticated user with valid invitation token but invalid password should not be able to accept invitation with new url" do
     user = invite
     sign_out
     accept_invitation :invitation_token => user.invitation_token do
@@ -90,7 +111,19 @@ feature "Invitations:" do
     user.should_not be_valid_password('987654321')
   end
   
-  scenario "not authenticated user with valid data should be able to accept invitation" do
+  scenario "not authenticated user with valid data should be able to accept invitation with legacy url" do
+    user = invite
+    sign_out
+    accept_invitation :invitation_token => user.invitation_token, :legacy_url => true
+    
+    current_url.should == "http://www.example.com/"
+    page.should have_content("Your password was set successfully. You are now signed in.")
+    user.reload.should be_valid_password('987654321')
+    User.last.email.should == "user@test.com"
+    User.last.invitation_token.should be_nil
+  end
+  
+  scenario "not authenticated user with valid data should be able to accept invitation with new url" do
     user = invite
     sign_out
     accept_invitation :invitation_token => user.invitation_token

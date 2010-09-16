@@ -46,7 +46,7 @@ describe Devise::Models::Invitable do
   
   it "body should have link to confirm the account" do
     host = ActionMailer::Base.default_url_options[:host]
-    invitation_url_regexp = %r{<a href=\"http://#{host}/users/invitation/accept\?invitation_token=#{subject.invitation_token}">}
+    invitation_url_regexp = %r{<a href=\"http://#{host}/users/invitation/accept/#{subject.invitation_token}">}
     last_delivery.body.should =~ invitation_url_regexp
   end
   
