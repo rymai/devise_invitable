@@ -26,11 +26,20 @@ class Devise::InvitationsController < ApplicationController
   
   # GET /resources/invitation/accept/:invitation_token or (legacy url) /resources/invitation/accept?invitation_token=:invitation_token
   def edit
-    if params[:invitation_token] && self.resource = resource_class.first(:conditions => { :invitation_token => params[:invitation_token] })
-      render_with_scope :edit
-    else
+    self.resource = resource_class.first(:conditions => { :invitation_token => params[:invitation_token] })
+    
+    error = if params[:invitation_token].blank? || !resource
       set_flash_message(:alert, :invitation_token_invalid)
+    elsif resource.invitation_accepted?
+      set_flash_message(:alert, :invitation_already_accepted)
+    elsif !resource.valid_invitation?
+      set_flash_message(:alert, :invitation_token_no_longer_valid)
+    end
+    
+    if error.present?
       redirect_to after_sign_out_path_for(resource_name)
+    else
+      render_with_scope :edit
     end
   end
   
