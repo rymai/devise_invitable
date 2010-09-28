@@ -20,25 +20,24 @@ Gem::Specification.new do |s|
   
   {
     'bundler'            => '~> 1.0.0',
-    'spork'              => '~> 0.8.4',
+    'spork'              => '~> 0.9.0.rc2',
     'rspactor'           => '~> 0.7.beta.7',
-    'rspec-rails'        => '~> 2.0.0.beta.20',
+    'rspec-rails'        => '~> 2.0.0.beta.22',
     'shoulda'            => '~> 2.11.3',
     'mocha'              => '~> 0.9.8',
-    'steak'              => '~> 0.4.0.beta.1',
+    'steak'              => '~> 1.0.0.beta.2',
     'capybara'           => '~> 0.3.9',
     'launchy'            => '~> 0.3.7',
     'factory_girl_rails' => '~> 1.0',
     'sqlite3-ruby'       => '~> 1.3.1',
-    'mongoid'            => '2.0.0.beta.17',
-    'bson_ext'           => '1.0.4'
+    'mongoid'            => '2.0.0.beta.18'
   }.each do |lib, version|
     s.add_development_dependency(lib, version)
   end
   
   {
     'rails'  => '~> 3.0.0',
-    'devise' => '~> 1.1.2'
+    'devise' => '~> 1.1.0'
   }.each do |lib, version|
     s.add_runtime_dependency(lib, version)
   end
