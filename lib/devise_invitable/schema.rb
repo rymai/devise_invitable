@@ -26,8 +26,9 @@ module Devise::Schema
   #
   # Returns nothing.
   def invitable
-    apply_devise_schema :invitation_token,   String,  :limit => 20
-    apply_devise_schema :invitation_sent_at, DateTime
+    apply_devise_schema :invitation_token,       String,  :limit => 20
+    apply_devise_schema :invitation_sent_at,     DateTime
+    apply_devise_schema :invitation_accepted_at, DateTime
   end
   
 end

@@ -47,6 +47,7 @@ describe Devise::Models::Invitable do
       
       it "should return a record with no errors, set invitation_token and send invitation email even if user is invalid and Devise.validate_on_invite = false" do
         emails_sent do
+          Devise.stub!(:validate_on_invite).and_return(false)
           user = User.invite(:email => "valid@email.com", :name => "a"*50)
           user.should be_persisted
           user.invitation_token.should be_present
@@ -186,10 +187,20 @@ describe Devise::Models::Invitable do
   
   describe "Instance Methods" do
     describe "#invited?" do
-      it "should be invited? after invited?" do
+      it "should be invited? after invite" do
         user = Factory.build(:invited_user)
         user.invite
         user.should be_invited
+      end
+    end
+    
+    describe "#invitation_accepted?" do
+      it "should be invitation_accepted? after accept_invitation" do
+        user = Factory.build(:invited_user)
+        user.invite
+        user.password = "123456"
+        user.accept_invitation
+        user.should be_invitation_accepted
       end
     end
     
@@ -247,6 +258,7 @@ describe Devise::Models::Invitable do
       
       it "should return a record with no errors, set invitation_token and send invitation email even if user is invalid and Devise.validate_on_invite = false" do
         emails_sent do
+          Devise.stub!(:validate_on_invite).and_return(false)
           user = Factory.build(:invited_user, :name => "a"*50)
           user.invite
           user.should be_persisted

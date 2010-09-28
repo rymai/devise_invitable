@@ -32,6 +32,24 @@ module Devise
         invitation_token.present?
       end
       
+      # Public: Indicates weither the record has accepted its invitation.
+      #
+      # Examples
+      #
+      #   user = User.invite(:email => 'someone@example.com')
+      #   user.invitation_accepted?
+      #   # => false
+      #
+      #   user = User.invite(:email => 'someone@example.com')
+      #   user.accept_invitation
+      #   user.invitation_accepted?
+      #   # => true
+      #
+      # Returns a Boolean that indicates if the record has accepted its invitation.
+      def invitation_accepted?
+        invitation_accepted_at.present?
+      end
+      
       # Public: Indicates if a record's invitation is valid
       #
       # Examples
@@ -97,8 +115,8 @@ module Devise
       # Returns the success of the invitation acceptation as a Boolean.
       def accept_invitation
         @skip_password = false
-        if invited? && valid?
-          clear_invitation_token
+        if invited? && !invitation_accepted? && valid?
+          self.invitation_accepted_at = Time.now.utc
           save
         else
           false
@@ -139,7 +157,7 @@ module Devise
       
       # Overwritting the method in Devise's :validatable module
       def password_required?
-        !@skip_password && (invited? || !persisted? || !password.nil? || !password_confirmation.nil?)
+        !@skip_password && ((invited? && !invitation_accepted?) || !persisted? || !password.nil? || !password_confirmation.nil?)
       end
       
       # Deliver the invitation email

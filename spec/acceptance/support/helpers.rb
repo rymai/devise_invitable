@@ -63,12 +63,20 @@ module HelperMethods
   
   def accept_invitation(options = {})
     unless options[:visit] == false
-      visit "http://www.example.com/users/invitation/accept#{options[:legacy_url] ? "?invitation_token=" : "/"}#{options[:invitation_token]}"
+      visit_accept_invitation_url(options[:invitation_token], options[:legacy_url])
     end
     fill_in 'Password', :with => '987654321'
     fill_in 'Password confirmation', :with => '987654321'
     yield if block_given?
     click_button 'Set my password'
+  end
+  
+  def visit_accept_invitation_url(invitation_token, legacy = false)
+    visit "http://www.example.com/users/invitation/accept#{legacy ? "?invitation_token=" : "/"}#{invitation_token}"
+  end
+  
+  def test_with_legacy_invitation_acceptation_url(token)
+    yield if block_given?
   end
   
 end
