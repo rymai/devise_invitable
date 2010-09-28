@@ -1,3 +1,15 @@
+== September 28, 2010
+
+* Changes made after thibaudgg's suggestions:
+  * accept invitation link should be /:resources/invitation/accept/:invitation_token
+  * by default, invitation token is not re-generated on each new invite of a resource
+  * invitation token can be re-generated on a new invite by calling resource.invite(:reset_invitation_token => true)
+  * invitation token is not cleared when a resource accept its invitation, but a new invitation_accepted_at field is set  instead
+  * resource that has already accepted invitation that re-click invitation link is redirected to after_sign_out_path_for with following message: "You have already accepted your invitation, please use the log-in form."
+  * resource that try to accept invitation with blank or invalid (not corresponding to any existing resource) invitation_token is redirected to after_sign_out_path_for with a message like: "The invitation token provided is not valid!"
+  * resource that try to accept invitation with a no longer valid invitation_token is redirected to after_sign_out_path_for with a message like: "The invitation token provided is no longer valid!"
+  * resource that were invited before theses changes and that'll try to re-accept invitation will be redirected to after_sign_out_path_for with the "The invitation token provided is not valid!" message, it's the best we can do since before these changes, invitation_token were cleared, so we can't retrieve resource from their invitation token
+
 == September 17, 2010
 
 * Changes:
