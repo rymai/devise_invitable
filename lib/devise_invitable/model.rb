@@ -62,11 +62,13 @@ module Devise
       #   # => send a new invitation to this user (with a new invitation token)
       #
       # Returns the success of the invitation as a Boolean.
-      def invite
+      def invite(options = {})
         if new_record? || invited?
           @skip_password = true
-          self.skip_confirmation! if self.respond_to? :skip_confirmation!
-          generate_invitation_token unless !valid? && self.class.validate_on_invite
+          self.skip_confirmation! if self.respond_to?(:skip_confirmation!)
+          if invited? && options.key?(:reset_invitation_token) || (new_record? && (valid? || !self.class.validate_on_invite))
+            generate_invitation_token
+          end
           save(:validate => self.class.validate_on_invite) && !!deliver_invitation
         end
       end
@@ -143,10 +145,6 @@ module Devise
       # Deliver the invitation email
       def deliver_invitation
         ::Devise.mailer.invitation_instructions(self).deliver
-      end
-      
-      def clear_invitation_token
-        self.invitation_token = nil
       end
       
       module ClassMethods

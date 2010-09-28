@@ -100,11 +100,11 @@ describe Devise::Models::Invitable do
         User.accept_invitation(:invitation_token => user.invitation_token).should == user
       end
       
-      it "should clear invitation token with a valid password" do
+      it "should not clear invitation token with a valid password" do
         user = User.invite(:email => "valid@email.com")
         user.invitation_token.should be_present
         user = User.accept_invitation(:invitation_token => user.invitation_token, :password => "123456")
-        user.invitation_token.should be_nil
+        user.invitation_token.should be_present
       end
       
       it "should not clear invitation token if no password has been set" do
@@ -278,73 +278,43 @@ describe Devise::Models::Invitable do
         user.confirmed_at.should be_present
       end
       
-      it "should set additional accessible attributes" do
-        user = Factory.build(:invited_user, :name => "John Doe")
-        user.invite
-        user.name.should == "John Doe"
-      end
-      
-      it "should generate a new invitation token on each new User#invite with Devise.validate_on_invite = false" do
-        Devise.stub!(:validate_on_invite).and_return(false)
-        user = User.invite(:email => "valid@email.com")
-        5.times do
-          old_token = user.invitation_token
-          user.invite
-          old_token.should_not == user.invitation_token
+      [true, false].each do |bool|
+        it "should not generate a new invitation token on each new User#invite with Devise.validate_on_invite = #{bool}" do
+          Devise.stub!(:validate_on_invite).and_return(bool)
+          user = User.invite(:email => "valid@email.com")
+          5.times do
+            old_token = user.invitation_token
+            user.invite
+            old_token.should == user.invitation_token
+          end
         end
       end
       
-      it "should generate a new invitation token on each new User#invite with Devise.validate_on_invite = true" do
-        Devise.stub!(:validate_on_invite).and_return(true)
-        user = User.invite(:email => "valid@email.com")
-        5.times do
-          old_token = user.invitation_token
-          user.invite
-          old_token.should_not == user.invitation_token
-        end
-      end
-      
-      it "should never generate the same invitation token for different users" do
-        invitation_tokens = []
-        user = User.invite(:email => "valid@email.com")
-        10.times do
-          user.invite
-          token = user.invitation_token
-          invitation_tokens.should_not include(token)
-          invitation_tokens << token
+      [true, false].each do |bool|
+        it "should generate a new invitation token on each new User#invite with Devise.validate_on_invite = #{bool} and :reset_invitation_token option is present" do
+          Devise.stub!(:validate_on_invite).and_return(bool)
+          user = User.invite(:email => "valid@email.com")
+          5.times do
+            old_token = user.invitation_token
+            user.invite(:reset_invitation_token => true)
+            old_token.should_not == user.invitation_token
+          end
         end
       end
     end
     
     describe "#accept_invitation" do
-      it "should clear invitation token with a valid password" do
+      it "should set invitation_accepted_at with a valid password" do
         user = User.invite(:email => "valid@email.com")
         user.password = "123456"
-        user.invitation_token.should be_present
+        user.invitation_accepted_at.should be_nil
         user.accept_invitation
-        user.invitation_token.should be_nil
+        user.invitation_accepted_at.should be_present
       end
       
-      it "should not clear invitation token if no password has been set" do
-        user = User.invite(:email => "valid@email.com")
-        user.invitation_token.should be_present
-        user.accept_invitation
-        user.encrypted_password.should be_blank
-        user.invitation_token.should be_present
-      end
-      
-      it "should not clear invitation token with an invalid password" do
-        user = User.invite(:email => "valid@email.com")
-        user.password = "12"
-        user.invitation_token.should be_present
-        user.accept_invitation
-        user.invitation_token.should be_present
-      end
-      
-      it "should not clear invitation token with any other invalid attributes" do
+      it "should not clear invitation_token with a valid password" do
         user = User.invite(:email => "valid@email.com")
         user.password = "123456"
-        user.name = "a"*50
         user.invitation_token.should be_present
         user.accept_invitation
         user.invitation_token.should be_present
@@ -355,6 +325,37 @@ describe Devise::Models::Invitable do
         user.password = "123456"
         user.accept_invitation
         user.encrypted_password.should be_present
+      end
+      
+      it "should not clear invitation_token and not set invitation_accepted_at if no password has been set" do
+        user = User.invite(:email => "valid@email.com")
+        user.invitation_token.should be_present
+        user.invitation_accepted_at.should be_nil
+        user.accept_invitation
+        user.encrypted_password.should be_blank
+        user.invitation_token.should be_present
+        user.invitation_accepted_at.should be_nil
+      end
+      
+      it "should not clear invitation_token and not set invitation_accepted_at with an invalid password" do
+        user = User.invite(:email => "valid@email.com")
+        user.password = "12"
+        user.invitation_token.should be_present
+        user.invitation_accepted_at.should be_nil
+        user.accept_invitation
+        user.invitation_token.should be_present
+        user.invitation_accepted_at.should be_nil
+      end
+      
+      it "should not clear invitation_token and not set invitation_accepted_at with any other invalid attributes" do
+        user = User.invite(:email => "valid@email.com")
+        user.password = "123456"
+        user.name = "a"*50
+        user.invitation_token.should be_present
+        user.invitation_accepted_at.should be_nil
+        user.accept_invitation
+        user.invitation_token.should be_present
+        user.invitation_accepted_at.should be_nil
       end
     end
   end
