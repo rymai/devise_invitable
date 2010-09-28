@@ -1,9 +1,9 @@
 <h2>Edit <%= @user.name %></h2>
 
-<%= form_for(@user, :html => { :method => :put }) do |f| %>
+<%= form_for(@user, :url => users_path, :html => { :method => :put }) do |f| %>
   <p><%= f.label :name %><br />
   <%= f.text_field :name %></p>
-
+  
   <p><%= f.submit "Update" %></p>
 <% end %>
 
