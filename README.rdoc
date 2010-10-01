@@ -2,12 +2,13 @@
 
 It adds a module to Devise[http://github.com/plataformatec/devise] that allow authenticated resources to send invitations by email to others. Invited resources accept an invitation by setting their password.
 
-== Installation for Rails ~> 3.0.0 and Devise ~> 1.1.2
+== Installation for Rails ~> 3.0.0 and Devise ~> 1.1.0
 
-This fork[http://github.com/rymai/devise_invitable] of DeviseInvitable only supports Rails ~> 3.0.0 and Devise ~> 1.1.2
+This fork[http://github.com/rymai/devise_invitable] of DeviseInvitable only supports Rails ~> 3.0.0 and Devise ~> 1.1.0
 Also, it is not distributed on RubyGems[http://rubygems.org], so you'll need to require this gem with the <tt>:git</tt> option of bundler in your Gemfile:
 
-  gem "devise",           "~> 1.1.2"
+  gem "rails",            "~> 3.0.0"
+  gem "devise",           "~> 1.1.0"
   gem "devise_invitable", :git => "git://github.com/rymai/devise_invitable.git"
 
 === Automatic installation
@@ -46,6 +47,7 @@ or for a model that is already created, define a migration to add DeviseInvitabl
   change_table :users do |t|
     t.string   :invitation_token, :limit => 20
     t.datetime :invitation_sent_at
+    t.datetime :invitation_accepted_at
     t.index    :invitation_token
   end
 
