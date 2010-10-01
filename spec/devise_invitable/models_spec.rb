@@ -21,25 +21,30 @@ describe DeviseInvitable do
       end
     end
     
-    it "set a default value for invite_for" do
-      User.invite_for.should == 0
+    describe ".invite_for" do
+      it "should have a default value for invite_for" do
+        User.invite_for.should == 0
+      end
+      
+      it "should be possible to set a custom value for invite_for" do
+        Invitable.invite_for.should == 2.weeks
+      end
     end
     
-    it "set a default value for validate_on_invite" do
-      User.validate_on_invite.should be_false
+    describe ".validate_on_invite" do
+      it "should have a default value for validate_on_invite" do
+        User.validate_on_invite.should be_false
+      end
+      
+      it "should be possible to set a custom value for validate_on_invite" do
+        Invitable.validate_on_invite.should be_true
+      end
     end
     
-    it "set a custom value for invite_for" do
-      Invitable.invite_for.should == 2.weeks
-    end
-    
-    it "set a custom value for validate_on_invite" do
-      Invitable.validate_on_invite.should be_true
-    end
-    
-    it "invitable attributes" do
+    it "should set invitable attributes to nil by default" do
       Invitable.new.invitation_token.should be_nil
       Invitable.new.invitation_sent_at.should be_nil
+      Invitable.new.invitation_accepted_at.should be_nil
     end
   end
   

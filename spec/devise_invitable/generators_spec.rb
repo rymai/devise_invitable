@@ -6,7 +6,7 @@ describe DeviseInvitable::Generators::DeviseInvitableGenerator, :slow => true do
   RAILS_APP_PATH = File.expand_path("../../rails_app", __FILE__)
   
   describe "rails g" do
-    before(:each) { @output = `cd #{RAILS_APP_PATH} && rails g` }
+    before(:all) { @output = `cd #{RAILS_APP_PATH} && rails g` }
     
     it "should include the 3 generators" do
       @output.should include("DeviseInvitable:\n  devise_invitable\n  devise_invitable:install\n  devise_invitable:views")
@@ -82,7 +82,7 @@ describe DeviseInvitable::Generators::DeviseInvitableGenerator, :slow => true do
   end
   
   describe "rails g devise_invitable Octopussy" do
-    before(:each) { @output = `cd #{RAILS_APP_PATH} && rails g devise_invitable Octopussy -p` }
+    before(:all) { @output = `cd #{RAILS_APP_PATH} && rails g devise_invitable Octopussy -p` }
     
     it "should include inject  app/models/octopussy.rb" do
       @output.should =~ %r(inject.+  app/models/octopussy\.rb\n)

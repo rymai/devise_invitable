@@ -1,53 +1,50 @@
 require 'spec_helper'
 
 describe Devise::Models::Invitable do
+  subject { User.invite(:email => "valid@email.com") }
+  
   before(:each) do
-    ActionMailer::Base.deliveries.clear
     Devise.mailer_sender = "test@example.com"
-    @user = User.invite(:email => "valid@email.com")
+    ActionMailer::Base.deliveries.clear
+    subject # trigger the invitation!
   end
   
-  subject { @user }
-  
-  it "email sent after reseting the user password" do
+  it "should send an email sent on invite" do
     ActionMailer::Base.deliveries.size.should == 1
   end
   
-  it "content type should be set to html" do
+  it "should set content type should be set to html and charset to UTF8" do
     last_delivery.content_type.should == "text/html; charset=UTF-8"
   end
   
-  it "send invitation to the user email" do
+  it "should send the email the email of the invited resource" do
     last_delivery.to.should == [subject.email]
   end
   
-  it "setup sender from configuration" do
+  it "should set the email sender from Devise configuration file" do
     last_delivery.from.should == ["test@example.com"]
   end
   
-  it "setup subject from I18n" do
-    I18n.locale = :en
+  it "should setup email subject from I18n" do
     store_translations :en, :devise => { :mailer => { :invitation_instructions => { :subject => 'You Got An Invitation!' } } } do
       User.invite(:email => "valid2@email.com")
       last_delivery.subject.should == "You Got An Invitation!"
     end
   end
   
-  it "subject namespaced by model" do
+  it "should retrieve in priority subject namespaced by model" do
     store_translations :en, :devise => { :mailer => { :invitation_instructions => { :user_subject => 'You Got An User Invitation!' } } } do
       User.invite(:email => "valid2@email.com")
       last_delivery.subject.should == "You Got An User Invitation!"
     end
   end
   
-  it "body should have user info" do
+  it "should send an email containing record's email" do
     last_delivery.body.should =~ /#{subject.email}/
   end
   
-  it "body should have link to confirm the account" do
-    host = ActionMailer::Base.default_url_options[:host]
-    invitation_url_regexp = %r{<a href=\"http://#{host}/users/invitation/accept/#{subject.invitation_token}">}
-    last_delivery.body.should =~ invitation_url_regexp
+  it "should send an email containing a link to accept the invitation" do
+    last_delivery.body.should =~ %r{<a href=\"http://#{ActionMailer::Base.default_url_options[:host]}/users/invitation/accept/#{subject.invitation_token}">}
   end
   
   def last_delivery
