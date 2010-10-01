@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.require_path = "lib"
   s.rdoc_options = ["--main", "README.rdoc", "--charset=UTF-8"]
   
-  s.required_ruby_version     = '>= 1.8.6'
+  s.required_ruby_version     = '~> 1.8.6'
   s.required_rubygems_version = '~> 1.3.6'
   
   {
@@ -30,7 +30,9 @@ Gem::Specification.new do |s|
     'launchy'            => '~> 0.3.7',
     'factory_girl_rails' => '~> 1.0',
     'sqlite3-ruby'       => '~> 1.3.1',
-    'mongoid'            => '2.0.0.beta.18'
+    'mongo'              => '1.0.9',
+    'bson_ext'           => '1.0.9',
+    'mongoid'            => '~> 2.0.0.beta.19'
   }.each do |lib, version|
     s.add_development_dependency(lib, version)
   end
