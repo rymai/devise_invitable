@@ -81,14 +81,15 @@ module Devise
       #
       # Returns the success of the invitation as a Boolean.
       def invite(options = {})
-        if new_record? || invited?
-          @skip_password = true
-          self.skip_confirmation! if self.respond_to?(:skip_confirmation!)
-          if invited? && options.key?(:reset_invitation_token) || (new_record? && (valid? || !self.class.validate_on_invite))
-            generate_invitation_token
-          end
-          save(:validate => self.class.validate_on_invite) && !!deliver_invitation
+        @skip_password = true
+        return false unless new_record? || invited?
+        
+        self.skip_confirmation! if self.respond_to?(:skip_confirmation!)
+        self.invitation_sent_at = Time.now.utc
+        if invited? && options.key?(:reset_invitation_token) || (new_record? && (!self.class.validate_on_invite || valid?))
+          self.invitation_token = Devise.friendly_token
         end
+        save(:validate => self.class.validate_on_invite) && deliver_invitation
       end
       
       # Public: Accept the record's current invitation. The invitation can be
@@ -115,12 +116,10 @@ module Devise
       # Returns the success of the invitation acceptation as a Boolean.
       def accept_invitation
         @skip_password = false
-        if invited? && !invitation_accepted? && valid?
-          self.invitation_accepted_at = Time.now.utc
-          save
-        else
-          false
-        end
+        return false unless invited? && !invitation_accepted? && valid?
+        
+        self.invitation_accepted_at = Time.now.utc
+        save
       end
       
     private
@@ -146,13 +145,6 @@ module Devise
       #
       def invitation_period_valid?
         invitation_sent_at && (self.class.invite_for.to_i.zero? || invitation_sent_at.utc >= self.class.invite_for.ago)
-      end
-      
-      # Generates a new random token for invitation,
-      # and stores the time this token is being generated
-      def generate_invitation_token
-        self.invitation_token   = Devise.friendly_token
-        self.invitation_sent_at = Time.now.utc
       end
       
       # Overwritting the method in Devise's :validatable module
@@ -188,6 +180,7 @@ module Devise
           if invitable.persisted? && !invitable.invited?
             invitable.errors.add(:email, :taken)
           elsif invitable.email.present? && invitable.email.match(Devise.email_regexp)
+            invitable.errors.clear unless self.validate_on_invite
             invitable.invite
           end
           
