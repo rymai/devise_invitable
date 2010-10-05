@@ -1,24 +1,14 @@
+pkg/*
+*.gem
+.bundle
+
 ## MAC OS
 .DS_Store
-
-## TEXTMATE
-*.tmproj
-tmtags
-
-## EMACS
-*~
-\#*
-.\#*
-
-## VIM
-*.swp
-
-## PROJECT::GENERAL
-coverage
-rdoc
-doc
-pkg
-*.log
+.Trashes
+.com.apple.timemachine.supported
+.fseventsd
+Desktop DB
+Desktop DF
 
 ## PROJECT::SPECIFIC
 spec/rails_app/log
