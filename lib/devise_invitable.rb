@@ -8,13 +8,11 @@ require 'devise_invitable/controllers/helpers'
 require 'devise_invitable/controllers/internal_helpers'
 
 module Devise
-  # Public: Time interval where the invitation token is valid (default: 0). If 
-  # invite_for is 0 or nil, the invitation will never expire. Set invite_for in 
-  # the Devise configuration file.
+  # Public: Validity period of the invitation token (default: 0). If 
+  # invite_for is 0 or nil, the invitation will never expire.
+  # Set invite_for in the Devise configuration file (in config/initializers/devise.rb).
   #
-  # Examples (in config/initializers/devise.rb)
-  #
-  #   config.invite_for = 2.weeks
+  #   config.invite_for = 2.weeks # => The invitation token will be valid 2 weeks
   mattr_accessor :invite_for
   @@invite_for = 0
   
