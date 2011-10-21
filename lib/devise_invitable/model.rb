@@ -14,7 +14,7 @@ module Devise
     #               won't expire. (default: 0).
     module Invitable
       extend ActiveSupport::Concern
-      
+
       # Public: Indicates weither the record is currently invited.
       #
       # Examples
@@ -31,7 +31,7 @@ module Devise
       def invited?
         invitation_token.present?
       end
-      
+
       # Public: Indicates if a record's invitation is valid
       #
       # Examples
@@ -44,13 +44,13 @@ module Devise
       #   user.valid_invitation?
       #   # => false
       #
-      # Returns the validity of the record's invitation as a Boolean. Validity 
+      # Returns the validity of the record's invitation as a Boolean. Validity
       #   is relative to the invitation date and the invite_for set in
       #   devise.rb. False is returned if the record is not currently invited.
       def valid_invitation?
         invited? && invitation_period_valid?
       end
-      
+
       # Public: Invite the record by sending it an email.
       #
       # Examples
@@ -70,7 +70,7 @@ module Devise
           save(:validate => self.class.validate_on_invite) && !!deliver_invitation
         end
       end
-      
+
       # Public: Accept the record's current invitation. The invitation can be
       # accepted only if the record has set a password.
       #
@@ -102,9 +102,9 @@ module Devise
           false
         end
       end
-      
+
     private
-      
+
       # Checks if the invitation for the user is within the limit time.
       # We do this by calculating if the difference between today and the
       # invitation sent date does not exceed the invite for time configured.
@@ -127,28 +127,28 @@ module Devise
       def invitation_period_valid?
         invitation_sent_at && (self.class.invite_for.to_i.zero? || invitation_sent_at.utc >= self.class.invite_for.ago)
       end
-      
+
       # Generates a new random token for invitation,
       # and stores the time this token is being generated
       def generate_invitation_token
         self.invitation_token   = Devise.friendly_token
         self.invitation_sent_at = Time.now.utc
       end
-      
+
       # Overwritting the method in Devise's :validatable module
       def password_required?
         !@skip_password && (invited? || !persisted? || !password.nil? || !password_confirmation.nil?)
       end
-      
+
       # Deliver the invitation email
       def deliver_invitation
         ::Devise.mailer.invitation_instructions(self).deliver
       end
-      
+
       def clear_invitation_token
         self.invitation_token = nil
       end
-      
+
       module ClassMethods
         # Public: Send an invitation email to a given email. Invitation can only
         # be sent to email that are not already in the database, or to email
@@ -162,22 +162,22 @@ module Devise
         #
         #   User.invite(:email => 'someone@example.com')
         #   # => send an invitation to this email
-        # 
+        #
         # Returns a record, if it has no errors, the invitation has been sent
         #   to its email.
         def invite(attributes = {})
           invitable = find_or_initialize_with_error_by(:email, attributes[:email])
           invitable.attributes = attributes
-          
+
           if invitable.persisted? && !invitable.invited?
             invitable.errors.add(:email, :taken)
           elsif invitable.email.present? && invitable.email.match(Devise.email_regexp)
             invitable.invite
           end
-          
+
           invitable
         end
-        
+
         # Accept an invitation for a record that has the given invitation_token.
         #
         # attributes - A Hash of attributes to set for the record (default: {}):
@@ -198,7 +198,7 @@ module Devise
         def accept_invitation(attributes = {})
           invitable = find_or_initialize_with_error_by(:invitation_token, attributes[:invitation_token])
           invitable.attributes = attributes
-          
+
           if invitable.persisted? && !invitable.valid_invitation?
             invitable.errors.add(:invitation_token, :invalid)
           elsif invitable.errors.empty?
@@ -206,11 +206,11 @@ module Devise
           end
           invitable
         end
-        
+
         Devise::Models.config(self, :invite_for)
         Devise::Models.config(self, :validate_on_invite)
       end
-      
+
     end
   end
 end

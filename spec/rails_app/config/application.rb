@@ -18,9 +18,9 @@ require "devise_invitable"
 module RailsApp
   class Application < Rails::Application
     config.autoload_paths += %W[#{config.root}/app/#{DEVISE_ORM}]
-    
+
     config.filter_parameters << :password
-    
+
     config.action_mailer.default_url_options = { :host => "localhost:3000" }
   end
 end

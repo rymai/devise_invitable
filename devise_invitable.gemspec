@@ -14,10 +14,10 @@ Gem::Specification.new do |s|
   s.files        = Dir["{app,config,lib}/**/*"] + %w[LICENSE README.rdoc]
   s.require_path = "lib"
   s.rdoc_options = ["--main", "README.rdoc", "--charset=UTF-8"]
-  
+
   s.required_ruby_version     = '>= 1.8.6'
   s.required_rubygems_version = '~> 1.3.6'
-  
+
   {
     'bundler'            => '~> 1.0.0',
     'spork'              => '~> 0.8.4',
@@ -35,12 +35,12 @@ Gem::Specification.new do |s|
   }.each do |lib, version|
     s.add_development_dependency(lib, version)
   end
-  
+
   {
     'rails'  => '~> 3.0.0',
     'devise' => '~> 1.1.2'
   }.each do |lib, version|
     s.add_runtime_dependency(lib, version)
   end
-  
+
 end

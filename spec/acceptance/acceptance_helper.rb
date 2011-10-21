@@ -4,10 +4,10 @@ require 'capybara/rails'
 
 Rspec.configure do |config|
   config.include Capybara
-  
+
   config.before(:each) do
   end
-  
+
   config.after(:each) do
     Capybara.reset_sessions!
   end

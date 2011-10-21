@@ -111,7 +111,7 @@ You can also use the <tt>invite</tt> instance method as follow:
 
   User.new(:email => "new_user@example.com", :name => "John Doe").invite
   # => an invitation email will be sent to new_user@example.com
-  
+
   User.find_by_invitation_token("oijd98q6yg28quwd98dwqo").invite
   # => an new invitation email will be sent to this user, the generated token will be different
 
@@ -191,7 +191,7 @@ Take a look at the generated locale file (in <tt>config/locales/devise_invitable
 DeviseInvitable supports ActiveRecord and Mongoid, like Devise.
 
 == Note on Patches/Pull Requests
- 
+
 * Fork the project.
 * Make your feature addition or bug fix.
 * Add specs for it. This is important so I don't break it in a future version unintentionally.
