@@ -1,9 +1,9 @@
 module HelperMethods
-  
+
   def warden
     request.env['warden']
   end
-  
+
   def create_user(options = {})
     @current_user ||= begin
       user = Factory(:user, options[:user] || {})
@@ -12,7 +12,7 @@ module HelperMethods
       user
     end
   end
-  
+
   def create_admin(options = {})
     @current_admin ||= begin
       admin = Factory(:admin, options[:admin] || {})
@@ -21,11 +21,11 @@ module HelperMethods
       admin
     end
   end
-  
+
   def sign_in_as(resource_name, options = {}, &block)
     send(:"sign_in_as_#{resource_name}", { resource_name => options }, &block)
   end
-  
+
   def sign_in_as_user(options = {}, &block)
     user = create_user(options)
     visit "http://www.example.com/users/sign_in"
@@ -36,7 +36,7 @@ module HelperMethods
     click_button 'Sign in'
     user
   end
-  
+
   def sign_in_as_admin(options = {}, &block)
     admin = create_admin(options)
     visit "http://www.example.com/admins/sign_in"
@@ -47,11 +47,11 @@ module HelperMethods
     click_button 'Sign in'
     admin
   end
-  
+
   def sign_out
     visit "http://www.example.com/users/sign_out"
   end
-  
+
   def invite
     sign_in_as_user
     visit "http://www.example.com/users/invitation/new"
@@ -60,7 +60,7 @@ module HelperMethods
     click_button 'Send an invitation'
     User.last
   end
-  
+
   def accept_invitation(options = {})
     unless options[:visit] == false
       visit "http://www.example.com/users/invitation/accept?invitation_token=#{options[:invitation_token]}"
@@ -70,7 +70,7 @@ module HelperMethods
     yield if block_given?
     click_button 'Set my password'
   end
-  
+
 end
 
 Rspec.configuration.include(HelperMethods)
