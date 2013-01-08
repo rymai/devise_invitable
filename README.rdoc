@@ -1,3 +1,5 @@
+== IMPORTANT: This fork is not maintained anymore, please use {the official devise_invitable}[https://github.com/scambra/devise_invitable] by {@scambra}[https://github.com/scambra] instead!
+
 = DeviseInvitable
 
 It adds a module to Devise[http://github.com/plataformatec/devise] that allow authenticated resources to send invitations by email to others. Invited resources accept an invitation by setting their password.
